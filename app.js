@@ -55,8 +55,10 @@ const COLOR_NAMES = {
 // ============================================
 let state = {
     mode: 'available',  // 'available' | 'target' | 'convert'
-    karat: 18,          // target karat
-    karatFrom: 16,      // source karat (convert mode only)
+    karat: 18,          // target karat (internal value or 'custom')
+    karatManual: 18,    // specific target karat value
+    karatFrom: 16,      // source karat
+    karatFromManual: 16,// specific source karat value
     color: 'amarillo',
 };
 
@@ -96,6 +98,10 @@ const els = {
     addSection: $('#add-section'),
     addItems: $('#add-items'),
     targetKaratLabel: $('#target-karat-label'),
+    sourceKaratManual: $('#source-karat-manual'),
+    targetKaratManual: $('#target-karat-manual'),
+    sourceCustomInputWrapper: $('#source-custom-input-wrapper'),
+    targetCustomInputWrapper: $('#target-custom-input-wrapper'),
 };
 
 // ============================================
@@ -106,8 +112,20 @@ const els = {
  * Standard alloy calculation (modes: available / target)
  */
 function calculateAlloy(weight, karat, color, mode) {
-    const alloy = ALLOY_DB[karat]?.[color];
-    if (!alloy) return null;
+    let alloy = ALLOY_DB[karat]?.[color];
+
+    // Fallback logic for manual/custom karats
+    if (!alloy) {
+        const closestKarat = findClosestKarat(karat, color);
+        alloy = JSON.parse(JSON.stringify(ALLOY_DB[closestKarat][color]));
+        alloy.Au = (karat / 24) * 100;
+
+        // Adjust other metals proportionally to maintain color
+        let otherMetalsSum = 0;
+        for (const [m, p] of Object.entries(alloy)) { if (m !== 'Au') otherMetalsSum += p; }
+        const targetOtherSum = 100 - alloy.Au;
+        for (const m in alloy) { if (m !== 'Au') alloy[m] = (alloy[m] / otherMetalsSum) * targetOtherSum; }
+    }
 
     const auPercent = alloy.Au / 100;
     let totalWeight, results;
@@ -151,8 +169,21 @@ function calculateAlloy(weight, karat, color, mode) {
 function calculateConversion(weight, karatFrom, karatTo, color) {
     if (karatFrom === karatTo) return null;
 
-    const alloyTarget = ALLOY_DB[karatTo]?.[color];
-    if (!alloyTarget) return null;
+    let alloyTarget = ALLOY_DB[karatTo]?.[color];
+
+    // Fallback logic for custom target karat
+    if (!alloyTarget) {
+        const closestKarat = findClosestKarat(karatTo, color);
+        alloyTarget = JSON.parse(JSON.stringify(ALLOY_DB[closestKarat][color]));
+        alloyTarget.Au = (karatTo / 24) * 100;
+
+        let otherMetalsSum = 0;
+        for (const [m, p] of Object.entries(alloyTarget)) { if (m !== 'Au') otherMetalsSum += p; }
+        const targetOtherSum = 100 - alloyTarget.Au;
+        for (const m in alloyTarget) {
+            if (m !== 'Au') alloyTarget[m] = (alloyTarget[m] / otherMetalsSum) * targetOtherSum;
+        }
+    }
 
     const purityFrom = karatFrom / 24;
     const purityTo = karatTo / 24;
@@ -224,6 +255,21 @@ function calculateConversion(weight, karatFrom, karatTo, color) {
         goldInMaterial,
         materialWeight: weight,
     };
+}
+
+/**
+ * Finds the closest karat available in DB for a specific color to use as a base for proportions.
+ */
+function findClosestKarat(karat, color) {
+    const availableKarats = Object.keys(ALLOY_DB)
+        .filter(k => ALLOY_DB[k][color])
+        .map(Number);
+
+    if (availableKarats.length === 0) return 18; // Default fallback
+
+    return availableKarats.reduce((prev, curr) =>
+        Math.abs(curr - karat) < Math.abs(prev - karat) ? curr : prev
+    );
 }
 
 // ============================================
@@ -382,15 +428,15 @@ function updateConvertDirection() {
     if (state.mode !== 'convert') return;
 
     const badge = els.directionBadge;
-    const arrow = badge.querySelector('.direction-arrow');
-    const text = badge.querySelector('.direction-text');
+    const kFrom = state.karatFromManual;
+    const kTo = state.karatManual;
 
-    if (state.karatFrom < state.karat) {
+    if (kFrom < kTo) {
         arrow.textContent = '↑';
         arrow.className = 'direction-arrow direction-up';
         text.textContent = 'Subir kilate — se agrega oro 24K puro';
         badge.className = 'convert-direction-badge direction-up';
-    } else if (state.karatFrom > state.karat) {
+    } else if (kFrom > kTo) {
         arrow.textContent = '↓';
         arrow.className = 'direction-arrow direction-down';
         text.textContent = 'Bajar kilate — se agrega liga (metales base)';
@@ -446,7 +492,16 @@ function initEvents() {
         btn.addEventListener('click', () => {
             $$('.karat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            state.karat = parseInt(btn.dataset.karat);
+            state.karat = btn.dataset.karat;
+
+            if (state.karat === 'custom') {
+                els.targetCustomInputWrapper.classList.remove('hidden');
+                state.karatManual = parseFloat(els.targetKaratManual.value) || 18;
+            } else {
+                els.targetCustomInputWrapper.classList.add('hidden');
+                state.karatManual = parseInt(state.karat);
+            }
+
             updateColorAvailability();
             updateConvertDirection();
         });
@@ -457,9 +512,30 @@ function initEvents() {
         btn.addEventListener('click', () => {
             $$('.source-karat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            state.karatFrom = parseInt(btn.dataset.karat);
+            state.karatFrom = btn.dataset.karat;
+
+            if (state.karatFrom === 'custom') {
+                els.sourceCustomInputWrapper.classList.remove('hidden');
+                state.karatFromManual = parseFloat(els.sourceKaratManual.value) || 16;
+            } else {
+                els.sourceCustomInputWrapper.classList.add('hidden');
+                state.karatFromManual = parseInt(state.karatFrom);
+            }
+
             updateConvertDirection();
         });
+    });
+
+    // Manual input listeners
+    els.targetKaratManual.addEventListener('input', () => {
+        state.karatManual = parseFloat(els.targetKaratManual.value) || 0;
+        updateColorAvailability();
+        updateConvertDirection();
+    });
+
+    els.sourceKaratManual.addEventListener('input', () => {
+        state.karatFromManual = parseFloat(els.sourceKaratManual.value) || 0;
+        updateConvertDirection();
     });
 
     // Color selection
@@ -544,13 +620,21 @@ function handleCalculate() {
 
     let result;
     if (state.mode === 'convert') {
-        if (state.karatFrom === state.karat) {
+        if (state.karatFromManual === state.karatManual) {
             showError('El kilate de origen y destino son iguales');
             return;
         }
-        result = calculateConversion(weight, state.karatFrom, state.karat, state.color);
+        if (state.karatFromManual <= 0 || state.karatManual <= 0 || state.karatFromManual > 24 || state.karatManual > 24) {
+            showError('Kilates inválidos (deben estar entre 1 y 24)');
+            return;
+        }
+        result = calculateConversion(weight, state.karatFromManual, state.karatManual, state.color);
     } else {
-        result = calculateAlloy(weight, state.karat, state.color, state.mode);
+        if (state.karatManual <= 0 || state.karatManual > 24) {
+            showError('Kilate inválido (debe estar entre 1 y 24)');
+            return;
+        }
+        result = calculateAlloy(weight, state.karatManual, state.color, state.mode);
     }
 
     renderResults(result);

@@ -132,19 +132,21 @@
                         <span>Kilate del Material Actual</span>
                     </label>
                     <div class="karat-grid" id="source-karat-grid">
-                        <button class="source-karat-btn" data-karat="22">22K</button>
-                        <button class="source-karat-btn" data-karat="21">21K</button>
-                        <button class="source-karat-btn" data-karat="18">18K</button>
-                        <button class="source-karat-btn active" data-karat="16">16K</button>
                         <button class="source-karat-btn" data-karat="14">14K</button>
-                        <button class="source-karat-btn" data-karat="12">12K</button>
-                        <button class="source-karat-btn" data-karat="10">10K</button>
-                        <button class="source-karat-btn" data-karat="9">9K</button>
-                        <button class="source-karat-btn" data-karat="8">8K</button>
+                        <button class="source-karat-btn" data-karat="18">18K</button>
+                        <button class="source-karat-btn" data-karat="22">22K</button>
+                        <button class="source-karat-btn" data-karat="custom" id="source-karat-custom-btn">Otro</button>
                     </div>
-                    <div class="convert-direction-badge" id="convert-direction-badge">
+                    <!-- Manual Input for Source Karat -->
+                    <div class="custom-input-wrapper hidden" id="source-custom-input-wrapper">
+                        <input type="number" id="source-karat-manual" placeholder="Ej: 19.5" step="0.1" min="1" max="24"
+                            inputmode="decimal">
+                        <span class="input-unit">K</span>
+                    </div>
+
+                    <div id="convert-direction-badge" class="convert-direction-badge hidden">
                         <span class="direction-arrow">↑</span>
-                        <span class="direction-text">Subir kilate — se agrega oro 24K puro</span>
+                        <span class="direction-text">Subir kilataje</span>
                     </div>
                 </div>
 
@@ -168,12 +170,16 @@
                         <span id="target-karat-label">Kilate Objetivo</span>
                     </label>
                     <div class="karat-grid" id="karat-grid">
-                        <button class="karat-btn" data-karat="22">22K</button>
-                        <button class="karat-btn" data-karat="21">21K</button>
-                        <button class="karat-btn active" data-karat="18">18K</button>
-                        <button class="karat-btn" data-karat="14">14K</button>
                         <button class="karat-btn" data-karat="10">10K</button>
-                        <button class="karat-btn" data-karat="9">9K</button>
+                        <button class="karat-btn active" data-karat="18">18K</button>
+                        <button class="karat-btn" data-karat="22">22K</button>
+                        <button class="karat-btn" data-karat="custom" id="target-karat-custom-btn">Otro</button>
+                    </div>
+                    <!-- Manual Input for Target Karat -->
+                    <div class="custom-input-wrapper hidden" id="target-custom-input-wrapper">
+                        <input type="number" id="target-karat-manual" placeholder="Ej: 20" step="0.1" min="1" max="24"
+                            inputmode="decimal">
+                        <span class="input-unit">K</span>
                     </div>
                 </div>
 
