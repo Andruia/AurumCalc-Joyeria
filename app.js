@@ -41,6 +41,7 @@ const METAL_INFO = {
     Cu: { name: 'Cobre (Cu)', fullName: 'Cobre', color: '#B87333', symbol: 'Cu' },
     Zn: { name: 'Zinc (Zn)', fullName: 'Zinc', color: '#7A8B99', symbol: 'Zn' },
     Pd: { name: 'Paladio (Pd)', fullName: 'Paladio', color: '#CED4DA', symbol: 'Pd' },
+    Liga: { name: 'Liga del material original', fullName: 'Liga original', color: '#808080', symbol: 'L' },
 };
 
 const COLOR_NAMES = {
@@ -200,11 +201,17 @@ function calculateConversion(weight, karatFrom, karatTo, color) {
             Au: { grams: goldToAdd, label: 'Oro 24K puro' }
         };
 
-        // Final composition matches target alloy percentages
-        for (const [metal, percent] of Object.entries(alloyTarget)) {
-            results[metal] = {
-                grams: totalWeight * (percent / 100),
-                percent: percent,
+        // Final composition: Gold (orig + added) + Original Liga
+        results['Au'] = {
+            grams: totalWeight * purityTo,
+            percent: purityTo * 100,
+        };
+
+        const ligaGrams = totalWeight - results['Au'].grams;
+        if (ligaGrams > 0.001) {
+            results['Liga'] = {
+                grams: ligaGrams,
+                percent: (1 - purityTo) * 100,
             };
         }
     } else {
