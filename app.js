@@ -322,7 +322,11 @@ function renderResults(data) {
     }
 
     // Summary
-    els.summaryAlloy.textContent = `${data.karat}K ${COLOR_NAMES[data.color]}`;
+    if (data.mode === 'convert' && data.direction === 'up') {
+        els.summaryAlloy.textContent = `${data.karat}K Oro`;
+    } else {
+        els.summaryAlloy.textContent = `${data.karat}K ${COLOR_NAMES[data.color]}`;
+    }
     els.summaryTotal.textContent = `${data.totalWeight.toFixed(2)}g`;
     els.summaryPurity.textContent = `${(data.karat / 24 * 100).toFixed(1)}%`;
 
@@ -443,16 +447,19 @@ function updateConvertDirection() {
         arrow.className = 'direction-arrow direction-up';
         text.textContent = 'Subir kilate — se agrega oro 24K puro';
         badge.className = 'convert-direction-badge direction-up';
+        els.colorGrid.classList.add('disabled-context');
     } else if (kFrom > kTo) {
         arrow.textContent = '↓';
         arrow.className = 'direction-arrow direction-down';
         text.textContent = 'Bajar kilate — se agrega liga (metales base)';
         badge.className = 'convert-direction-badge direction-down';
+        els.colorGrid.classList.remove('disabled-context');
     } else {
         arrow.textContent = '=';
         arrow.className = 'direction-arrow direction-same';
         text.textContent = 'Mismo kilate — no necesita conversión';
         badge.className = 'convert-direction-badge direction-same';
+        els.colorGrid.classList.remove('disabled-context');
     }
 }
 
@@ -604,9 +611,11 @@ function setMode(mode) {
         if (mode === 'available') {
             els.weightLabel.textContent = 'Oro 24K disponible (gramos)';
             els.weightInput.placeholder = 'Ej: 10.00';
+            els.colorGrid.classList.remove('disabled-context');
         } else {
             els.weightLabel.textContent = 'Peso final deseado (gramos)';
             els.weightInput.placeholder = 'Ej: 20.00';
+            els.colorGrid.classList.remove('disabled-context');
         }
     }
 }

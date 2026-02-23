@@ -395,24 +395,47 @@ body {
     margin-top: 12px;
     animation: fadeInDown 0.3s ease-out;
 }
+
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
+
 .custom-input-wrapper input {
-    width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-tertiary);
-    border: 1px solid var(--border-gold); border-radius: var(--radius-md);
-    color: var(--text-gold); font-family: 'Outfit', sans-serif;
-    font-size: 1.1rem; font-weight: 700; outline: none;
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    color: var(--text-gold);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    outline: none;
     transition: all var(--transition-normal);
 }
+
 .custom-input-wrapper input:focus {
     border-color: var(--gold-500);
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
 }
+
 .custom-input-wrapper .input-unit {
-    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-    color: var(--text-gold); font-weight: 600; pointer-events: none;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-gold);
+    font-weight: 600;
+    pointer-events: none;
 }
 
 .input-unit {
@@ -529,6 +552,29 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
+}
+
+.color-grid.disabled-context {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(0.8);
+    position: relative;
+}
+
+.color-grid.disabled-context::after {
+    content: "No aplica al subir kilate";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text-gold);
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    z-index: 2;
+    pointer-events: none;
 }
 
 .color-btn {
