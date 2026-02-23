@@ -1,0 +1,28 @@
+{
+    "name": "AurumCalc — Calculadora de Aleaciones de Oro",
+    "short_name": "AurumCalc",
+    "description": "Calculadora profesional de aleaciones de oro para joyería. Calcula proporciones exactas de metales para distintos kilates y colores.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "any",
+    "theme_color": "#08080e",
+    "background_color": "#08080e",
+    "categories": [
+        "utilities",
+        "productivity"
+    ],
+    "icons": [
+        {
+            "src": "icons/icon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

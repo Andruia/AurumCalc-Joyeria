@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!-- AurumCalc v2.0 — Desarrollado por Andru.ia Solutions IA -->
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="description"
+        content="AurumCalc — Calculadora profesional de aleaciones de oro para joyería. Calcula proporciones exactas de metales para distintos kilates y colores.">
+    <title>AurumCalc — Calculadora de Aleaciones de Oro</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#08080e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AurumCalc">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Animated background particles -->
+    <div id="particles-bg" class="particles-bg" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="18" cy="18" r="16" stroke="url(#goldGrad)" stroke-width="2.5" fill="none" />
+                        <text x="18" y="23" text-anchor="middle" fill="url(#goldGrad)" font-size="14" font-weight="700"
+                            font-family="Outfit">Au</text>
+                        <defs>
+                            <linearGradient id="goldGrad" x1="0" y1="0" x2="36" y2="36">
+                                <stop offset="0%" stop-color="#FFD700" />
+                                <stop offset="50%" stop-color="#FFA500" />
+                                <stop offset="100%" stop-color="#B8860B" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>AurumCalc</h1>
+                    <span class="logo-subtitle">Calculadora de Aleaciones</span>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <button id="btn-reference-table" class="nav-btn" title="Tabla de referencia">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <line x1="3" y1="9" x2="21" y2="9" />
+                        <line x1="3" y1="15" x2="21" y2="15" />
+                        <line x1="9" y1="3" x2="9" y2="21" />
+                    </svg>
+                    <span>Referencia</span>
+                </button>
+                <button id="btn-print" class="nav-btn" title="Imprimir resultados">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 6 2 18 2 18 9" />
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                        <rect x="6" y="14" width="12" height="8" />
+                    </svg>
+                    <span>Imprimir</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Calculator Section -->
+        <section class="calculator-section">
+            <!-- Input Panel -->
+            <div class="glass-panel input-panel">
+                <div class="panel-header">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                        </svg>
+                        Parámetros de Aleación
+                    </h2>
+                </div>
+
+                <!-- Calculation Mode Toggle — 3 modes -->
+                <div class="mode-toggle" id="mode-toggle">
+                    <button class="mode-btn active" data-mode="available" id="mode-available">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                            <path d="M2 17l10 5 10-5" />
+                            <path d="M2 12l10 5 10-5" />
+                        </svg>
+                        <span class="mode-label">Desde Oro</span>
+                    </button>
+                    <button class="mode-btn" data-mode="target" id="mode-target">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="6" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                        <span class="mode-label">Peso Final</span>
+                    </button>
+                    <button class="mode-btn" data-mode="convert" id="mode-convert">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="17 1 21 5 17 9" />
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                            <polyline points="7 23 3 19 7 15" />
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                        </svg>
+                        <span class="mode-label">Convertir</span>
+                    </button>
+                </div>
+
+                <!-- Source Karat (only visible in convert mode) -->
+                <div class="input-group convert-only hidden" id="source-karat-group">
+                    <label>
+                        <span class="label-icon">🔶</span>
+                        <span>Kilate del Material Actual</span>
+                    </label>
+                    <div class="karat-grid" id="source-karat-grid">
+                        <button class="source-karat-btn" data-karat="22">22K</button>
+                        <button class="source-karat-btn" data-karat="21">21K</button>
+                        <button class="source-karat-btn" data-karat="18">18K</button>
+                        <button class="source-karat-btn active" data-karat="16">16K</button>
+                        <button class="source-karat-btn" data-karat="14">14K</button>
+                        <button class="source-karat-btn" data-karat="12">12K</button>
+                        <button class="source-karat-btn" data-karat="10">10K</button>
+                        <button class="source-karat-btn" data-karat="9">9K</button>
+                        <button class="source-karat-btn" data-karat="8">8K</button>
+                    </div>
+                    <div class="convert-direction-badge" id="convert-direction-badge">
+                        <span class="direction-arrow">↑</span>
+                        <span class="direction-text">Subir kilate — se agrega oro 24K puro</span>
+                    </div>
+                </div>
+
+                <!-- Weight Input -->
+                <div class="input-group">
+                    <label for="weight-input" id="weight-label">
+                        <span class="label-icon">⚖️</span>
+                        <span id="weight-label-text">Oro 24K disponible (gramos)</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="weight-input" inputmode="decimal" min="0.01" step="0.01"
+                            placeholder="Ej: 10.00" value="">
+                        <span class="input-unit">g</span>
+                    </div>
+                </div>
+
+                <!-- Target Karat Selector -->
+                <div class="input-group">
+                    <label>
+                        <span class="label-icon">💎</span>
+                        <span id="target-karat-label">Kilate Objetivo</span>
+                    </label>
+                    <div class="karat-grid" id="karat-grid">
+                        <button class="karat-btn" data-karat="22">22K</button>
+                        <button class="karat-btn" data-karat="21">21K</button>
+                        <button class="karat-btn active" data-karat="18">18K</button>
+                        <button class="karat-btn" data-karat="14">14K</button>
+                        <button class="karat-btn" data-karat="10">10K</button>
+                        <button class="karat-btn" data-karat="9">9K</button>
+                    </div>
+                </div>
+
+                <!-- Color Selector -->
+                <div class="input-group">
+                    <label>
+                        <span class="label-icon">🎨</span>
+                        Color de Aleación
+                    </label>
+                    <div class="color-grid" id="color-grid">
+                        <button class="color-btn active" data-color="amarillo" title="Oro Amarillo">
+                            <span class="color-swatch"
+                                style="background: linear-gradient(135deg, #FFD700, #DAA520)"></span>
+                            <span>Amarillo</span>
+                        </button>
+                        <button class="color-btn" data-color="rosa" title="Oro Rosa">
+                            <span class="color-swatch"
+                                style="background: linear-gradient(135deg, #E8A090, #C47A6A)"></span>
+                            <span>Rosa</span>
+                        </button>
+                        <button class="color-btn" data-color="blanco" title="Oro Blanco">
+                            <span class="color-swatch"
+                                style="background: linear-gradient(135deg, #E8E8E8, #C0C0C0)"></span>
+                            <span>Blanco</span>
+                        </button>
+                        <button class="color-btn" data-color="verde" title="Oro Verde">
+                            <span class="color-swatch"
+                                style="background: linear-gradient(135deg, #C5D88A, #8FAE45)"></span>
+                            <span>Verde</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <button id="btn-calculate" class="calculate-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    Calcular Aleación
+                </button>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="glass-panel results-panel" id="results-panel">
+                <div class="panel-header">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Resultados
+                    </h2>
+                </div>
+
+                <!-- Empty State -->
+                <div class="results-empty" id="results-empty">
+                    <div class="empty-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1" opacity="0.3">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12h8M12 8v8" />
+                        </svg>
+                    </div>
+                    <p>Ingresa los parámetros y presiona <strong>Calcular</strong></p>
+                    <span class="empty-hint">Los resultados aparecerán aquí</span>
+                </div>
+
+                <!-- Results Content (hidden by default) -->
+                <div class="results-content hidden" id="results-content">
+                    <!-- Conversion Info Banner (only in convert mode) -->
+                    <div class="convert-info-banner hidden" id="convert-info-banner">
+                        <div class="convert-info-row">
+                            <span class="convert-info-label">Conversión</span>
+                            <span class="convert-info-value" id="convert-info-text">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Summary Card -->
+                    <div class="result-summary" id="result-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">Aleación</span>
+                            <span class="summary-value" id="summary-alloy">—</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-item">
+                            <span class="summary-label">Peso Total</span>
+                            <span class="summary-value highlight" id="summary-total">—</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-item">
+                            <span class="summary-label">Pureza</span>
+                            <span class="summary-value" id="summary-purity">—</span>
+                        </div>
+                    </div>
+
+                    <!-- What to Add Section (for convert mode) -->
+                    <div class="add-section hidden" id="add-section">
+                        <h3 class="add-section-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 8v8M8 12h8" />
+                            </svg>
+                            Material a Agregar
+                        </h3>
+                        <div class="add-items" id="add-items">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <!-- Metal Breakdown -->
+                    <div class="metals-breakdown-header">
+                        <h3>Composición Final</h3>
+                    </div>
+                    <div class="metals-breakdown" id="metals-breakdown">
+                        <!-- Dynamically populated -->
+                    </div>
+
+                    <!-- Visual Proportion Bar -->
+                    <div class="proportion-bar-container">
+                        <h3>Proporción Visual</h3>
+                        <div class="proportion-bar" id="proportion-bar">
+                            <!-- Dynamically populated -->
+                        </div>
+                        <div class="proportion-legend" id="proportion-legend">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Reference Table Modal -->
+    <div class="modal-overlay hidden" id="modal-overlay">
+        <div class="modal glass-panel" id="reference-modal">
+            <div class="modal-header">
+                <h2>📋 Tabla de Referencia — Composiciones Estándar</h2>
+                <button class="modal-close" id="modal-close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="reference-table">
+                    <thead>
+                        <tr>
+                            <th>Kilate</th>
+                            <th>% Au</th>
+                            <th>Color</th>
+                            <th>Au</th>
+                            <th>Ag</th>
+                            <th>Cu</th>
+                            <th>Zn</th>
+                            <th>Pd</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reference-tbody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">
+            <span class="footer-logo">Au</span>
+            <span>AurumCalc v2.0</span>
+        </div>
+        <p>Calculadora de Aleaciones para Joyería Profesional</p>
+        <p class="footer-note">Fórmulas basadas en estándares de la industria joyera internacional</p>
+        <div class="footer-copyright">
+            <p>© 2026 <strong>Andru.ia Solutions IA</strong> — Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('AurumCalc SW registered:', reg.scope))
+                .catch(err => console.warn('SW registration failed:', err));
+        }
+    </script>
+</body>
+
+</html>
